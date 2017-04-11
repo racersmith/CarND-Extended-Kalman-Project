@@ -15,6 +15,29 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
   TODO:
     * Calculate the RMSE here.
   */
+	VectorXd rmse(4);
+	rmse << 0, 0, 0, 0;
+
+	int est_size = estimations.size();
+
+	// Check for valid vectors
+	if (est_size != ground_truth.size() || est_size == 0) {
+		std::cout << "Invalid vectors passed to CalculateRMSE." << std::endl;
+		std::cout << "  est size: " << est_size << std::endl;
+		std::cout << "  truth size: " << ground_truth.size() << std::endl;
+		return rmse;
+	}
+	else {
+		// Calculate RMSE of valid vectors
+		for (int i = 0; i < est_size; i++) {
+			VectorXd residual = estimations[i] - ground_truth[i];
+			residual = residual.array() * residual.array();
+			rmse += residual;
+		}
+		rmse = rmse / est_size;
+		rmse = rmse.array().sqrt();
+		return rmse;
+	}
 }
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
@@ -22,4 +45,6 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   TODO:
     * Calculate a Jacobian here.
   */
+
+	// Check px*px + py*py == 0, set to small value to avoid divZero errors
 }
