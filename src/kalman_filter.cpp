@@ -16,17 +16,15 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   R_ = R_in;  // Measurement covariance
   Q_ = Q_in;  // Process covariance
 	
-	MatrixXd I_;
-	I_ = MatrixXd::Identity(4, 4);  // The all powerful identity matrix
+	int xn = x_.size();
+	I_ = MatrixXd::Identity(xn, xn);  // The all powerful identity matrix
 }
 
 void KalmanFilter::Predict() {
-  /**
-  TODO:
-    * predict the state
-  */
+	// Prediction
+	x_ = F_*x_;    // no external motion so u = 0
+	P_ = F_*P_*F_.transpose() + Q_;
 }
-
 
 // Kalman filter update for laser measurement
 void KalmanFilter::Update(const VectorXd &z) {
@@ -43,10 +41,6 @@ void KalmanFilter::Update(const VectorXd &z) {
 	// New State
 	x_ = x_ + K*y;
 	P_ = (I_ - K*H_)*P_;
-
-	// Prediction
-	x_ = F_*x_;    // no external motion so u = 0
-	P_ = F_*P_*F_.transpose() + Q_;
 }
 
 // Kalman filter update for radar measurement
