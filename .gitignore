@@ -28,3 +28,5 @@ ide_profiles/xcode/ExtendedKF.build/
 /Extended Kalman Filter.sln
 /Extended Kalman Filter.vcxproj
 /Extended Kalman Filter.vcxproj.filters
+/.vs
+/sensor-fusion-ekf-reference.pdf
