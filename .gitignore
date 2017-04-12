@@ -22,3 +22,9 @@ xcuserdata/
 *.xcscmblueprint
 ide_profiles/xcode/Debug/
 ide_profiles/xcode/ExtendedKF.build/
+/.vs/Extended Kalman Filter/v15
+/Debug
+/x64/Debug
+/Extended Kalman Filter.sln
+/Extended Kalman Filter.vcxproj
+/Extended Kalman Filter.vcxproj.filters
