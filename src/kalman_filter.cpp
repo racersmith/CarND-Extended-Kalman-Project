@@ -25,11 +25,6 @@ void KalmanFilter::Predict() {
 
 // Kalman filter update for laser measurement
 void KalmanFilter::Update(const VectorXd &z) {
-  /**
-  TODO:
-    * update the state by using Kalman Filter equations
-  */
-
 	// Measurement update
 	VectorXd y = z - H_*x_;
 	MatrixXd S = H_*P_*H_.transpose() + R_;

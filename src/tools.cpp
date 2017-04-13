@@ -96,11 +96,11 @@ VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
 	}
 	
 	// radial velocity
-	float radial_rate = (px*vx + py*vy) / distance;
+	float distance_rate = (px*vx + py*vy) / distance;
 
 	hx_prime << distance,
 		bearing,
-		radial_rate;
+		distance_rate;
 
 	return hx_prime;
 }
