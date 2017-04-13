@@ -15,9 +15,6 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   H_ = H_in;  // Measurement matrix
   R_ = R_in;  // Measurement covariance
   Q_ = Q_in;  // Process covariance
-	
-	int xn = x_.size();
-	I_ = MatrixXd::Identity(xn, xn);  // The all powerful identity matrix
 }
 
 void KalmanFilter::Predict() {
@@ -40,7 +37,9 @@ void KalmanFilter::Update(const VectorXd &z) {
 
 	// New State
 	x_ = x_ + K*y;
-	P_ = (I_ - K*H_)*P_;
+	int xn = x_.size();
+	MatrixXd I = MatrixXd::Identity(xn, xn);  // The all powerful identity matrix
+	P_ = (I - K*H_)*P_;
 }
 
 // Kalman filter update for radar measurement
