@@ -84,7 +84,7 @@ MatrixXd Tools::CalculateCovarianceQ(const double & dt, const float & noise_ax, 
 }
 
 VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
-	VectorXd hx_prime(3,1);
+	VectorXd hx_prime(3);
 	
 	// Pull parameters out of state
 	float px = x_state(0);
@@ -118,7 +118,7 @@ VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
 
 VectorXd Tools::PolarToCartesian(const Eigen::VectorXd & z_radar)
 {
-	VectorXd result(4, 1);
+	VectorXd result(4);
 
 	// Pull parameters from measurment
 	float distance = z_radar(0);
@@ -138,4 +138,21 @@ VectorXd Tools::PolarToCartesian(const Eigen::VectorXd & z_radar)
 	result << px, py, vx, vy;
 
 	return result;
+}
+
+VectorXd Tools::NormalizeAngle(const Eigen::VectorXd& y) {
+	VectorXd y_norm(3);
+
+	double angle = y[1];
+	
+	while (angle > M_PI){
+		angle -= M_PI;
+	}
+	
+	while (angle < -M_PI) {
+		angle += M_PI;
+	}
+	
+	y_norm << y[0], angle, y[2];
+	return y_norm;
 }

@@ -36,6 +36,11 @@ public:
 	Eigen::VectorXd PolarToCartesian(const Eigen::VectorXd& z_radar);
 
 	/**
+	* A helper method to normalize the bearing angle to the range +/- pi
+	*/
+	Eigen::VectorXd NormalizeAngle(const Eigen::VectorXd& y);
+	
+	/**
 	* A helper method to calculate the covariance matrix Q for the 
 	* given time step, dt and process noise constants noise_ax and noise_ay.
 	*/
