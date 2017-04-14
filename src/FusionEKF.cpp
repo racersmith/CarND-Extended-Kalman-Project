@@ -75,15 +75,58 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
 
+
+		// Create process covariance matrix
+		ekf_.Q_ = MatrixXd(4, 4);
+		// Create intial state transition matrix
+		// this will be updated each pass with new dt
+		ekf_.F_ = MatrixXd(4, 4);
+		ekf_.F_ <<	1, 0, 1, 0,
+								0, 1, 0, 1,
+								0, 0, 1, 0,
+								0, 0, 0, 1;
+
+		// Create prediction covariance matrix
+		ekf_.P_ = MatrixXd(4, 4);
+
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
+
+			// Set initial covariance
+			// Initialize with higher confidence in velocity
+			ekf_.P_ <<	1000, 0, 0, 0,
+									0, 1000, 0, 0,
+									0, 0, 10, 0,
+									0, 0, 0, 10;
+			
+			// Extract measurement data
+			double rho = measurement_pack.raw_measurements_[0];
+			double phi = measurement_pack.raw_measurements_[1];
+			double rho_dot = measurement_pack.raw_measurements_[2];
+			VectorXd z(4, 1);
+			z << rho, phi, rho_dot;
+			
+			// convert to cartesion coordinates
+			ekf_.x_ << tools.PolarToCartesian(z);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
-      Initialize state.
+      Initialize state for a initial laser measurement.
       */
+			
+			// Set initial covariance
+			// Initialize with higher confidence in position
+			ekf_.P_ <<	10, 0, 0, 0,
+									0, 10, 0, 0,
+									0, 0, 10000, 0,
+									0, 0, 0, 10000;
+			
+			// Extract laser data
+			double x = measurement_pack.raw_measurements_[0];
+			double y = measurement_pack.raw_measurements_[1];
+			ekf_.x_ << x, y, 0.0, 0.0;
     }
 
     // done initializing, no need to predict or update
