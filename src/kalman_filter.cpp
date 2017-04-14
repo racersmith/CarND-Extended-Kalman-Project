@@ -45,6 +45,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 	// Measurement update
 	MatrixXd hx = tools.CartesianToPolar(x_);
 	VectorXd y = z - hx;
+	y = tools.NormalizeAngle(y);
 	MatrixXd S = H_*P_*H_.transpose() + R_;
 	MatrixXd K = P_*H_.transpose()*S.inverse();
 

@@ -146,11 +146,11 @@ VectorXd Tools::NormalizeAngle(const Eigen::VectorXd& y) {
 	double angle = y[1];
 	
 	while (angle > M_PI){
-		angle -= M_PI;
+		angle -= 2*M_PI;
 	}
 	
 	while (angle < -M_PI) {
-		angle += M_PI;
+		angle += 2*M_PI;
 	}
 	
 	y_norm << y[0], angle, y[2];
