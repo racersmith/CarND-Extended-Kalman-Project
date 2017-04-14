@@ -39,7 +39,7 @@ public:
 	* A helper method to calculate the covariance matrix Q for the 
 	* given time step, dt and process noise constants noise_ax and noise_ay.
 	*/
-	Eigen::MatrixXd CalculateCovarianceQ(const float& dt, const float& noise_ax, const float& noise_ay);
+	Eigen::MatrixXd CalculateCovarianceQ(const double& dt, const float& noise_ax, const float& noise_ay);
 };
 
 #endif /* TOOLS_H_ */

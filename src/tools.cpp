@@ -127,7 +127,20 @@ Eigen::VectorXd Tools::PolarToCartesian(const Eigen::VectorXd & z_radar)
 	return result;
 }
 
-Eigen::MatrixXd Tools::CalculateCovarianceQ(const float & dt, const float & noise_ax, const float & noise_ay)
+Eigen::MatrixXd Tools::CalculateCovarianceQ(const double & dt, const float & noise_ax, const float & noise_ay)
 {
-	return Eigen::MatrixXd();
+	MatrixXd Q(4, 4);
+
+	// Calculate common parameters
+	double dt2 = dt*dt;
+	double dt3 = dt2*dt;
+	double dt4 = dt3*dt;
+
+	// Calculate process covariance matrix
+	Q <<	dt4 / 4 * noise_ax, 0, dt3 / 2 * noise_ax, 0,
+				0, dt4 / 4 * noise_ay, 0, dt3 / 2 * noise_ay,
+				dt3 / 2 * noise_ax, 0, dt2*noise_ax, 0,
+				0, dt3 / 2 * noise_ay, 0, dt2*noise_ay;
+
+	return Q;
 }
