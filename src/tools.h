@@ -29,6 +29,17 @@ public:
 	* A helper method to convert our Cartesian state to a polar measurement.
 	*/
 	Eigen::VectorXd CartesianToPolar(const Eigen::VectorXd& x_state);
+
+	/**
+	* A helper method to convert a polar measurment vector, z_radar, to a Cartesian vector
+	*/
+	Eigen::VectorXd PolarToCartesian(const Eigen::VectorXd& z_radar);
+
+	/**
+	* A helper method to calculate the covariance matrix Q for the 
+	* given time step, dt and process noise constants noise_ax and noise_ay.
+	*/
+	Eigen::MatrixXd CalculateCovarianceQ(const float& dt, const float& noise_ax, const float& noise_ay);
 };
 
 #endif /* TOOLS_H_ */

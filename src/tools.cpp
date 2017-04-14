@@ -102,3 +102,32 @@ VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
 
 	return hx_prime;
 }
+
+Eigen::VectorXd Tools::PolarToCartesian(const Eigen::VectorXd & z_radar)
+{
+	VectorXd result(4, 1);
+
+	// Pull parameters from measurment
+	float distance = z_radar(0);
+	float bearing = z_radar(1);
+	float distance_rate = z_radar(2);
+
+	// Calculate common parameters
+	float cos_b = cos(bearing);
+	float sin_b = sin(bearing);
+
+	// Calculate Cartesian vector
+	float px = distance*cos_b;
+	float py = distance*sin_b;
+	float vx = distance_rate*cos_b;
+	float vy = distance_rate*sin_b;
+	
+	result << px, py, vx, vy;
+
+	return result;
+}
+
+Eigen::MatrixXd Tools::CalculateCovarianceQ(const float & dt, const float & noise_ax, const float & noise_ay)
+{
+	return Eigen::MatrixXd();
+}
