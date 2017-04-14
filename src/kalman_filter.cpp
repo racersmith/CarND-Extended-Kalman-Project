@@ -1,4 +1,5 @@
 #include "kalman_filter.h"
+#include "tools.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -33,14 +34,23 @@ void KalmanFilter::Update(const VectorXd &z) {
 	// New State
 	x_ = x_ + K*y;
 	int xn = x_.size();
-	MatrixXd I = MatrixXd::Identity(xn, xn);  // The all powerful identity matrix
+	MatrixXd I = MatrixXd::Identity(xn, xn);
 	P_ = (I - K*H_)*P_;
 }
 
 // Kalman filter update for radar measurement
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  /**
-  TODO:
-    * update the state by using Extended Kalman Filter equations
-  */
+	Tools tools;
+
+	// Measurement update
+	MatrixXd hx = tools.CartesianToPolar(x_);
+	VectorXd y = z - hx;
+	MatrixXd S = H_*P_*H_.transpose() + R_;
+	MatrixXd K = P_*H_.transpose()*S.inverse();
+
+	// New state
+	x_ = x_ + K*y;
+	int xn = x_.size();
+	MatrixXd I = MatrixXd::Identity(xn, xn);
+	P_ = (I - K*H_)*P_;
 }
