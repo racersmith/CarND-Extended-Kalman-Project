@@ -9,10 +9,7 @@ Tools::Tools() {}
 
 Tools::~Tools() {}
 
-// Calculate the RMSE error over the test data for model evaluation.
-// Returns a vector of resulting errors
-VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
-                              const vector<VectorXd> &ground_truth) {
+VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations, const vector<VectorXd> &ground_truth) {
 	VectorXd rmse(4);
 	rmse << 0, 0, 0, 0;
 
@@ -38,8 +35,6 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 	}
 }
 
-// Takes the current state vector and calculates the Jacobian
-// matrix for use in the sensor update for radar.
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	// Jacobian
 	MatrixXd Hj(3, 4);
@@ -68,6 +63,24 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 		(py*(vx*py - vy*px) / x2y2_15), (px*(px*vy - py*vx) / x2y2_15), (px / x2y2_05), (py / x2y2_05);
 
 	return Hj;
+}
+
+MatrixXd Tools::CalculateCovarianceQ(const double & dt, const float & noise_ax, const float & noise_ay)
+{
+	MatrixXd Q(4, 4);
+
+	// Calculate common parameters
+	double dt2 = dt*dt;
+	double dt3 = dt2*dt;
+	double dt4 = dt3*dt;
+
+	// Calculate process covariance matrix
+	Q <<	dt4 / 4 * noise_ax, 0, dt3 / 2 * noise_ax, 0,
+				0, dt4 / 4 * noise_ay, 0, dt3 / 2 * noise_ay,
+				dt3 / 2 * noise_ax, 0, dt2*noise_ax, 0,
+				0, dt3 / 2 * noise_ay, 0, dt2*noise_ay;
+
+	return Q;
 }
 
 VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
@@ -103,7 +116,7 @@ VectorXd Tools::CartesianToPolar(const VectorXd& x_state) {
 	return hx_prime;
 }
 
-Eigen::VectorXd Tools::PolarToCartesian(const Eigen::VectorXd & z_radar)
+VectorXd Tools::PolarToCartesian(const Eigen::VectorXd & z_radar)
 {
 	VectorXd result(4, 1);
 
@@ -125,22 +138,4 @@ Eigen::VectorXd Tools::PolarToCartesian(const Eigen::VectorXd & z_radar)
 	result << px, py, vx, vy;
 
 	return result;
-}
-
-Eigen::MatrixXd Tools::CalculateCovarianceQ(const double & dt, const float & noise_ax, const float & noise_ay)
-{
-	MatrixXd Q(4, 4);
-
-	// Calculate common parameters
-	double dt2 = dt*dt;
-	double dt3 = dt2*dt;
-	double dt4 = dt3*dt;
-
-	// Calculate process covariance matrix
-	Q <<	dt4 / 4 * noise_ax, 0, dt3 / 2 * noise_ax, 0,
-				0, dt4 / 4 * noise_ay, 0, dt3 / 2 * noise_ay,
-				dt3 / 2 * noise_ax, 0, dt2*noise_ax, 0,
-				0, dt3 / 2 * noise_ay, 0, dt2*noise_ay;
-
-	return Q;
 }
