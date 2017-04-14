@@ -76,6 +76,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
 
+		previous_timestamp_ = measurement_pack.timestamp_;
 
 		// Create process covariance matrix
 		ekf_.Q_ = MatrixXd(4, 4);
@@ -97,10 +98,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 			// Set initial covariance
 			// Initialize with higher confidence in velocity
-			ekf_.P_ <<	1000, 0, 0, 0,
-									0, 1000, 0, 0,
-									0, 0, 10, 0,
-									0, 0, 0, 10;
+			ekf_.P_ <<	10000, 0, 0, 0,
+									0, 10000, 0, 0,
+									0, 0, 100, 0,
+									0, 0, 0, 100;
 			
 			// convert to cartesion coordinates
 			ekf_.x_ = tools.PolarToCartesian(measurement_pack.raw_measurements_);
@@ -112,8 +113,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			
 			// Set initial covariance
 			// Initialize with higher confidence in position
-			ekf_.P_ <<	10, 0, 0, 0,
-									0, 10, 0, 0,
+			ekf_.P_ <<	100, 0, 0, 0,
+									0, 100, 0, 0,
 									0, 0, 10000, 0,
 									0, 0, 0, 10000;
 			
@@ -141,7 +142,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    */
 
 	// Calculate elapsed time
-	double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 100000.0;
+	double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
 	previous_timestamp_ = measurement_pack.timestamp_;
 
 	// Update state transition matrix with new dt
