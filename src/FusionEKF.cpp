@@ -14,6 +14,8 @@ using std::vector;
 FusionEKF::FusionEKF() {
   is_initialized_ = false;
 
+	Tools tools;
+
   previous_timestamp_ = 0;
 
   // initializing matrices
@@ -101,15 +103,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 									0, 0, 10, 0,
 									0, 0, 0, 10;
 			
-			// Extract measurement data
-			double rho = measurement_pack.raw_measurements_[0];
-			double phi = measurement_pack.raw_measurements_[1];
-			double rho_dot = measurement_pack.raw_measurements_[2];
-			VectorXd z(4, 1);
-			z << rho, phi, rho_dot;
-			
 			// convert to cartesion coordinates
-			ekf_.x_ << tools.PolarToCartesian(z);
+			ekf_.x_ << tools.PolarToCartesian(measurement_pack.raw_measurements_);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
@@ -171,6 +166,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
+		// Calculate Jacobian
+		ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
+		// Set measurement covariance matrix for Radar
+		ekf_.R_ = R_radar_;
+		ekf_.UpdateEKF(measurement_pack.raw_measurements_)
+
   } else {
     // Laser updates
   }
