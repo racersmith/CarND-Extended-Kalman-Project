@@ -46,7 +46,6 @@ FusionEKF::FusionEKF() {
 	// This will be updated each time
 	Hj_ <<	0, 0, 0, 0,
 					0, 0, 0, 0,
-					0, 0, 0, 0,
 					0, 0, 0, 0;
 
 	// Process noise
@@ -104,7 +103,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 									0, 0, 0, 10;
 			
 			// convert to cartesion coordinates
-			ekf_.x_ << tools.PolarToCartesian(measurement_pack.raw_measurements_);
+			ekf_.x_ = tools.PolarToCartesian(measurement_pack.raw_measurements_);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
