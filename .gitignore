@@ -34,3 +34,7 @@ ide_profiles/xcode/ExtendedKF.build/
 /Visualize/kalman_tracker_windows
 /x64/Release
 /output_data
+/Extended Kalman Filter.vcxproj.user
+/data_out.txt
+/data_in.txt
+/kalman-tracker.py
