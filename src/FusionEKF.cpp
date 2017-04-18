@@ -72,7 +72,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       * Remember: you'll need to convert radar from polar to cartesian coordinates.
     */
     // first measurement
-    cout << "EKF: " << endl;
+    //cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
 
@@ -98,10 +98,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 			// Set initial covariance
 			// Initialize with higher confidence in velocity
-			ekf_.P_ <<	10000, 0, 0, 0,
-									0, 10000, 0, 0,
-									0, 0, 100, 0,
-									0, 0, 0, 100;
+			ekf_.P_ <<	10, 0, 0, 0,
+									0, 10, 0, 0,
+									0, 0, 1, 0,
+									0, 0, 0, 1;
 			
 			// convert to cartesion coordinates
 			ekf_.x_ = tools.PolarToCartesian(measurement_pack.raw_measurements_);
@@ -113,10 +113,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			
 			// Set initial covariance
 			// Initialize with higher confidence in position
-			ekf_.P_ <<	100, 0, 0, 0,
-									0, 100, 0, 0,
-									0, 0, 10000, 0,
-									0, 0, 0, 10000;
+			ekf_.P_ <<	0.5, 0, 0, 0,
+									0, 0.5, 0, 0,
+									0, 0, 1000, 0,
+									0, 0, 0, 1000;
 			
 			// Extract laser data
 			double x = measurement_pack.raw_measurements_[0];
@@ -190,6 +190,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   }
 
   // print the output
-  cout << "x_ = " << ekf_.x_ << endl;
-  cout << "P_ = " << ekf_.P_ << endl;
+  //cout << "x_ = " << ekf_.x_ << endl;
+  //cout << "P_ = " << ekf_.P_ << endl;
 }
