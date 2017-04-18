@@ -100,8 +100,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			// Initialize with higher confidence in velocity
 			ekf_.P_ <<	10, 0, 0, 0,
 									0, 10, 0, 0,
-									0, 0, 1, 0,
-									0, 0, 0, 1;
+									0, 0, 0.5, 0,
+									0, 0, 0, 0.5;
 			
 			// convert to cartesion coordinates
 			ekf_.x_ = tools.PolarToCartesian(measurement_pack.raw_measurements_);
@@ -115,8 +115,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			// Initialize with higher confidence in position
 			ekf_.P_ <<	0.5, 0, 0, 0,
 									0, 0.5, 0, 0,
-									0, 0, 1000, 0,
-									0, 0, 0, 1000;
+									0, 0, 100, 0,
+									0, 0, 0, 100;
 			
 			// Extract laser data
 			double x = measurement_pack.raw_measurements_[0];
