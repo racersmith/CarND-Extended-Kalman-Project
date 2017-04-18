@@ -31,3 +31,6 @@ ide_profiles/xcode/ExtendedKF.build/
 /.vs
 /sensor-fusion-ekf-reference.pdf
 /src/.vs
+/Visualize/kalman_tracker_windows
+/x64/Release
+/output_data
