@@ -1,5 +1,9 @@
-# Extended Kalman Filter Project Starter Code
+# Extended Kalman Filter Project
 Self-Driving Car Engineer Nanodegree Program
+
+Josh Smith
+
+2017/04/19
 
 ---
 
@@ -18,68 +22,81 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## Basic Build Instructions
 
-1. Clone this repo.
-2. Make a build directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make` 
+1. Make a build directory: `mkdir build && cd build`
+2. Compile: `cmake .. && make` 
    * On windows, you may need to run: `cmake .. -G "Unix Makefiles" && make`
-4. Run it: `./ExtendedKF path/to/input.txt path/to/output.txt`. You can find
+3. Run it: `./ExtendedKF path/to/input.txt path/to/output.txt`. You can find
    some sample inputs in 'data/'.
     - eg. `./ExtendedKF ../data/sample-laser-radar-measurement-data-1.txt output.txt`
 
-## Editor Settings
+## Rubric
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+### Compile
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+Compiling during development and testing was accomplished through Visual Studio 2017.  Basic compile instructions can be found above.
 
-## Code Style
+![Build](media/build.png)
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+### Accuracy
 
-## Generating Additional Data
+ExtendedKF was run on three datasets comprised of lidar and radar measurements.  The RMSE error for each data set is shown below.
 
-This is optional!
+#### sample-laser-radar-measurement-data-1
 
-If you'd like to generate your own radar and lidar data, see the
-[utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
-Matlab scripts that can generate additional data.
+​	**RMSE**
+​	0.0651243
+​	0.0605982
+​	0.530249
+​	0.544262
 
-## Project Instructions and Rubric
+![sample-laser-radar-measurement-data-1 Vis](media/sample-1.png)
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+#### sample-laser-radar-measurement-data-2
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/12dd29d8-2755-4b1b-8e03-e8f16796bea8)
-for instructions and the project rubric.
+​	**RMSE**
+​	0.185498
+​	0.1903
+​	0.476578
+​	0.804726
 
-## Hints!
+![sample-laser-radar-measurement-data-2 Vis](media/sample-2.png)
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
+#### obj_pose-laser-radar-synthetic-input
 
-## Call for IDE Profiles Pull Requests
+​	**RMSE**
+​	0.0975411
+​	0.0852351
+​	0.434453
+​	0.453103
 
-Help your fellow students!
+![obj_pose-laser-radar-synthetic-input Vis](media/obj-pose.png)
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
+### Algorithm 
 
-However! We'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
+#### Flow
 
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
+The general flow of the Kalman filter is outlined below.
 
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
+##### First Measurement
 
-Regardless of the IDE used, every submitted project must
-still be compilable with cmake and make.
+The filter can have either a laser or radar measurement for initialization.  These measurements are treated differently as the laser measurement returns information in a Cartesian coordinate system and lacks velocity data and the radar measurement returns information in a polar coordinate system and contains radial velocity information.  The covariance matrix is initialized differently based on this initial measurement type.
+
+Since the laser excels at positional accuracy the initial variance of px and py are set low.  However, a single lidar measurement does not give any information about velocity so the variance for vx and vy are set high. 
+
+$P_{Laser} = \begin{bmatrix}0.5, 0, 0, 0\\ 0, 0.5, 0, 0\\ 0, 0, 100, 0\\ 0, 0, 0, 100\end{bmatrix}$
+
+If the first measurement is radar the positional variance is set slightly above that of the laser measurement since radar does not provide the positional accuracy of laser.  The velocity is set low since a single measurement of radar does provide information of velocity.
+
+$P_{Radar} = \begin{bmatrix}10, 0, 0, 0\\ 0, 10, 0, 0\\ 0, 0, 0.5, 0\\ 0, 0, 0, 0.5\end{bmatrix}$
+
+##### Predict and Update
+
+After the filter is initialized with the first measurement the filter enters a loop of predict and update with each measurement.  Prediction is done in `FusionEKF` on lines 124-135.  After prediction is complete the measurement update is done in `FusionEKF.cpp` on lines 140-162.
+
+##### Radar and Lidar Measurements
+
+Radar and Lidar need to be treated differently in the Kalman filter since the Radar is a taken in a polar coordinate system and utilizes a Extended Kalman Filter.  This distinction is made in `FusionEKF.cpp` on line 140.
+
+### Code Efficiency
+
+Efforts were made  to avoid repeating calculations and inserting unnecessary control flow checks throughout the code.  Executing the ExtendedKF on the 500 samples in the `obj_pose-laser-radar-synthetic-input` data set requires 569ms to load and execute.  The actual filter routine contained within `fusionEKF.ProcessMeasurement` on line 139 in `main.cpp` represents 50.27%.  This represents a processing rate of 1,748 measurements processed per second.
