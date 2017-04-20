@@ -83,11 +83,15 @@ The filter can have either a laser or radar measurement for initialization.  The
 
 Since the laser excels at positional accuracy the initial variance of px and py are set low.  However, a single lidar measurement does not give any information about velocity so the variance for vx and vy are set high. 
 
-$P_{Laser} = \begin{bmatrix}0.5, 0, 0, 0\\ 0, 0.5, 0, 0\\ 0, 0, 100, 0\\ 0, 0, 0, 100\end{bmatrix}$
+px = py = 0.5
+
+vx = vy = 100
 
 If the first measurement is radar the positional variance is set slightly above that of the laser measurement since radar does not provide the positional accuracy of laser.  The velocity is set low since a single measurement of radar does provide information of velocity.
 
-$P_{Radar} = \begin{bmatrix}10, 0, 0, 0\\ 0, 10, 0, 0\\ 0, 0, 0.5, 0\\ 0, 0, 0, 0.5\end{bmatrix}$
+px = py = 10
+
+vx = vy = 0.5
 
 ##### Predict and Update
 
