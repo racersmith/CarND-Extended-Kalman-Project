@@ -38,3 +38,4 @@ ide_profiles/xcode/ExtendedKF.build/
 /data_out.txt
 /data_in.txt
 /kalman-tracker.py
+/Visualize/.ipynb_checkpoints
