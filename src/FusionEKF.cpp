@@ -125,14 +125,19 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
 	previous_timestamp_ = measurement_pack.timestamp_;
 
-	// Update state transition matrix with new dt
-	ekf_.F_(0, 2) = dt;
-	ekf_.F_(1, 3) = dt; 
+	// If the time step, dt, is small the change in the prediction will be small
+	// and can be skipped.
+	if (dt > 0.001) {
+		// Update state transition matrix with new dt
+		ekf_.F_(0, 2) = dt;
+		ekf_.F_(1, 3) = dt; 
 
-	// Update the noise covariance matrix with new dt
-	ekf_.Q_ = tools.CalculateCovarianceQ(dt, noise_ax_, noise_ay_);
-
-  ekf_.Predict();
+		// Update the noise covariance matrix with new dt
+		ekf_.Q_ = tools.CalculateCovarianceQ(dt, noise_ax_, noise_ay_);
+		
+		ekf_.Predict();
+	}
+  
 
   /*****************************************************************************
    *  Update
