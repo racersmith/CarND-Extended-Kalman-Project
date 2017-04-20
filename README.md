@@ -39,7 +39,7 @@ Compiling during development and testing was accomplished through Visual Studio 
 
 ### Accuracy
 
-ExtendedKF was run on three datasets comprised of lidar and radar measurements.  The RMSE error for each data set is shown below.
+ExtendedKF was run on three datasets comprised of Lidar and radar measurements.  The RMSE error for each data set is shown below.
 
 #### sample-laser-radar-measurement-data-1
 
@@ -81,17 +81,21 @@ The general flow of the Kalman filter is outlined below.
 
 The filter can have either a laser or radar measurement for initialization.  These measurements are treated differently as the laser measurement returns information in a Cartesian coordinate system and lacks velocity data and the radar measurement returns information in a polar coordinate system and contains radial velocity information.  The covariance matrix is initialized differently based on this initial measurement type.
 
-Since the laser excels at positional accuracy the initial variance of px and py are set low.  However, a single lidar measurement does not give any information about velocity so the variance for vx and vy are set high. 
+Since the Lidar excels at positional accuracy the initial variance of px and py are set low.  However, a single Lidar measurement does not give any information about velocity so the variance for vx and vy are set high. 
 
-px = py = 0.5
+Lidar initial covariance set in `FusionEKF.cpp` on line 105:
 
-vx = vy = 100
+​	px = py = 0.5
+
+​	vx = vy = 100
 
 If the first measurement is radar the positional variance is set slightly above that of the laser measurement since radar does not provide the positional accuracy of laser.  The velocity is set low since a single measurement of radar does provide information of velocity.
 
-px = py = 10
+Radar initial covariance set in `FusionEKF.cpp` on line 90:
 
-vx = vy = 0.5
+​	px = py = 10
+
+​	vx = vy = 0.5
 
 ##### Predict and Update
 
