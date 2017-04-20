@@ -107,4 +107,4 @@ Radar and Lidar need to be treated differently in the Kalman filter since the Ra
 
 ### Code Efficiency
 
-Efforts were made  to avoid repeating calculations and inserting unnecessary control flow checks throughout the code.  Executing the ExtendedKF on the 500 samples in the `obj_pose-laser-radar-synthetic-input` data set requires 569ms to load and execute.  The actual filter routine contained within `fusionEKF.ProcessMeasurement` on line 139 in `main.cpp` represents 50.27%.  This represents a processing rate of 1,748 measurements processed per second.
+Efforts were made  to avoid repeating calculations and inserting unnecessary control flow checks throughout the code.  Executing the ExtendedKF on the 500 samples in the `obj_pose-laser-radar-synthetic-input` data set requires 559ms to load and execute.  The actual filter routine contained within `fusionEKF.ProcessMeasurement` on line 139 in `main.cpp` takes 265ms.  This represents a processing rate of 1,886 measurements processed per second.
