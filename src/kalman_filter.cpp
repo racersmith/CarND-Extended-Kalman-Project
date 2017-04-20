@@ -27,9 +27,11 @@ void KalmanFilter::Predict() {
 // Kalman filter update for laser measurement
 void KalmanFilter::Update(const VectorXd &z) {
 	// Measurement update
-	VectorXd y = z - H_*x_;
-	MatrixXd S = H_*P_*H_.transpose() + R_;
-	MatrixXd K = P_*H_.transpose()*S.inverse();
+	VectorXd y = z - H_ * x_;
+	MatrixXd Ht = H_.transpose();
+	MatrixXd PHt = P_ * H_.transpose();
+	MatrixXd S = H_ * PHt + R_;
+	MatrixXd K = PHt * S.inverse();
 
 	// New State
 	x_ = x_ + K*y;
@@ -46,8 +48,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 	MatrixXd hx = tools.CartesianToPolar(x_);
 	VectorXd y = z - hx;
 	y = tools.NormalizeAngle(y);
-	MatrixXd S = H_*P_*H_.transpose() + R_;
-	MatrixXd K = P_*H_.transpose()*S.inverse();
+	MatrixXd Ht = H_.transpose();
+	MatrixXd PHt = P_ * H_.transpose();
+	MatrixXd S = H_ * PHt + R_;
+	MatrixXd K = PHt * S.inverse();
 
 	// New state
 	x_ = x_ + K*y;
