@@ -99,7 +99,9 @@ Radar initial covariance set in `FusionEKF.cpp` on line 90:
 
 ##### Predict and Update
 
-After the filter is initialized with the first measurement the filter enters a loop of predict and update with each measurement.  Prediction is done in `FusionEKF` on lines 124-135.  After prediction is complete the measurement update is done in `FusionEKF.cpp` on lines 140-162.
+After the filter is initialized with the first measurement the filter enters a loop of predict and update with each measurement.  Prediction is done in `FusionEKF` on lines 130-139.  After prediction is complete the measurement update is done in `FusionEKF.cpp` on lines 140-162.
+
+When the time step is very small the prediction step can be skipped since the change in prediction would be small.  This occurs when Lidar and Radar measurements arrive at the same time.
 
 ##### Radar and Lidar Measurements
 
@@ -107,4 +109,4 @@ Radar and Lidar need to be treated differently in the Kalman filter since the Ra
 
 ### Code Efficiency
 
-Efforts were made  to avoid repeating calculations and inserting unnecessary control flow checks throughout the code.  Executing the ExtendedKF on the 500 samples in the `obj_pose-laser-radar-synthetic-input` data set requires 559ms to load and execute.  The actual filter routine contained within `fusionEKF.ProcessMeasurement` on line 139 in `main.cpp` takes 265ms.  This represents a processing rate of 1,886 measurements processed per second.
+Efforts were made  to avoid repeating calculations and inserting unnecessary control flow checks throughout the code.  Executing the ExtendedKF on the 500 samples in the `obj_pose-laser-radar-synthetic-input` data set requires 559ms to load and execute.  The actual filter routine contained within `fusionEKF.ProcessMeasurement` on line 139 in `main.cpp` takes 261ms.  This represents a processing rate of 1,915 measurements processed per second.
